@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cvaccarello/particle-system.git"
+    "url": "git+https://github.com/cvaccarello/sparkle.git"
   },
   "keywords": [
 	"sparkle",
@@ -25,9 +25,9 @@
   "author": "Chris Vaccarello",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cvaccarello/particle-system/issues"
+    "url": "https://github.com/cvaccarello/sparkle/issues"
   },
-  "homepage": "https://github.com/cvaccarello/particle-system#readme",
+  "homepage": "https://github.com/cvaccarello/sparkle.git#readme",
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",
     "gulp": "^3.9.1",
