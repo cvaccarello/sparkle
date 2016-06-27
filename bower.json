@@ -1,0 +1,27 @@
+{
+  "name": "sparkle",
+  "version": "1.0.0",
+  "description": "A particle system for browsers",
+  "main": "dist/particle-system.min.js",
+  "authors": [
+    "Chris Vaccarello"
+  ],
+  "license": "ISC",
+  "keywords": [
+	"sparkle",
+	"particle",
+	"particles",
+	"particle-system",
+	"particle system",
+	"particle-emitter",
+	"particle emitter"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
