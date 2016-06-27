@@ -82,4 +82,4 @@ var NewParticleEmitter = new ParticleEmitter({
 
 
 ## Working Demos
-_working on it_
+[Basic Test Page](https://cvaccarello.github.io/sparkle/examples/test.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
