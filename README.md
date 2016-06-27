@@ -1,21 +1,22 @@
-# Welcome, to :sparkles: *Project Sparkle* :sparkles: !
+# Welcome, to :sparkles: Project Sparkle! :sparkles:
 
 
 # Introduction
 Hello All! This is my first attempt at creating public code, so please go easy on me haha.
 
-## What Is This?
+### What Is This?
 This is a particle system that adds and removes html elements to the DOM.  Eventually, I hope to make it optionally work with a canvas element as well, as it can, on average, handle a larger number of particles.
 
-## Why Would I Want to Use This?
+### Why Would I Want to Use This?
 You might be asking "why would I want to add particles to the DOM instead of a canvas element??" and the answer is, some times you may want your particles to be overtop of other elements.  When you use a canvas element, or any large overlay on the screen, it would block normal interactive elements like buttons.  Additionally with this system, you could setup a custom, signature particle effect for buttons on your site! Examples below.
 
 
 # Lets Begin
 A few things to note before using this code.  If you have any debugging tools open, like chrome dev tools or firebug, this will likely greatly slow down your particle effect and browser, so just be aware that it won't look quite the same, but it is a good way of simulate slower computers (though a VPN would be better).
 
-## Configuration
-### Particle System
+### Configuration
+
+#### :sparkles: Particle System :sparkles:
 Key | Description
 --- | -----------
 timeout | a number in milliseconds which represents the time between update intervals for the particle system.  It's unlikely you would ever want to change this, and not recommended to change anyways.
@@ -25,7 +26,8 @@ Example:
 var NewParticleSystem = new ParticleSystem({timeout: 30});
 ```
 
-### Particle Emitter
+
+#### :sparkles: Particle Emitter :sparkles:
 Key | Description
 --- | -----------
 | element | jquery element to calculate spawn location
@@ -47,12 +49,12 @@ var NewParticleEmitter = new ParticleEmitter({
 	max_particles: 100,
 	emit_delay: { min: 100, max: 100 },
 	direction: { min: 0, max: 360 },
-	spawn_point: 'center',
+	spawn_point: 'center'
 });
 ```
 
 
-### Particle
+#### :sparkles: Particle :sparkles:
 Key | Description
 --- | -----------
 | particle | default particle settings
@@ -69,7 +71,7 @@ var NewParticleEmitter = new ParticleEmitter({
 	particle: {
 		constructor: Particle,
 		append_to: $('body'),
-		template: \`<div style="width: 5px; height: 5px; background-color: red; z-index: 2;"></div>\`,
+		template: `<div style="width: 5px; height: 5px; background-color: red; z-index: 2;"></div>`,
 		time_to_live: 2000,
 		speed: 70,
 		size: 0
