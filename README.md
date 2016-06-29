@@ -14,6 +14,10 @@ You might be asking "why would I want to add particles to the DOM instead of a c
 # Lets Begin
 A few things to note before using this code.  If you have any debugging tools open, like chrome dev tools or firebug, this will likely greatly slow down your particle effect and browser, so just be aware that it won't look quite the same, but it is a good way of simulate slower computers (though a VPN would be better).
 
+I also recommend *no more than 300* particles on the screen at a time.  It will work with many more, infinitely more as far as I know, but this is running on the CPU, not the GPU, so older computers will start to slow down or even freeze, and you shouldn't sacrifice usability for a cool effect :)
+
+You can download this code, clone the repo, or download it via `bower install sparkle`.
+
 ### Configuration
 
 #### :sparkles: Particle System :sparkles:
@@ -82,4 +86,6 @@ var NewParticleEmitter = new ParticleEmitter({
 
 
 ## Working Demos
-[Basic Test Page](https://cvaccarello.github.io/sparkle/examples/test.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
+[Basic Test Page](https://cvaccarello.github.io/sparkle/examples/basic.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
+[Configured Examples](https://cvaccarello.github.io/sparkle/examples/configurations.html) - Several simple particle effects, created with CSS and adjusting the configurations available.
+Advanced Examples - Coming Soon.  Numerous advanced particle effects using images and extended classes.
