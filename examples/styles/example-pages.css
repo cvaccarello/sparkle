@@ -1,0 +1,73 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #efefef;
+	font-family: 'Open Sans', sans-serif;
+	margin: 0;
+}
+
+/* Cool firefox, just make buttons different b/c you feel like it... nice.  As you can tell, firefox needs this for things to look consistent. */
+button {
+	font-family: 'Open Sans', sans-serif;
+}
+
+section {
+	margin: 20px 0;
+}
+
+p {
+	margin: 0 40px;
+}
+
+.inline-block {
+	display: inline-block;
+	margin: 40px;
+	text-align: center;
+}
+
+.particle-emitter {
+	width: 240px; height: 240px;
+	background-color: #ffffff;
+	padding: 20px;
+	text-align: center;
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 1.2;
+	border: 1px solid #aaaaaa;
+	border-top: 3px solid;
+	box-shadow: 0 1px 15px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	display: block;
+	outline: none;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none;   /* Chrome/Safari/Opera */
+	-khtml-user-select: none;    /* Konqueror */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* Internet Explorer/Edge */
+	user-select: none;
+}
+
+.particle-emitter.red.is-active {
+	border-top-color: #ff0000;
+}
+
+.particle-emitter.green.is-active {
+	border-top-color: #00aa00;
+}
+
+.particle-emitter.blue.is-active {
+	border-top-color: #0000ff;
+}
+
+.particle-emitter.purple.is-active {
+	border-top-color: #ff00ff;
+}
+
+.particle-emitter > span {
+	position: relative;
+	margin-bottom: 12px;
+	display: inline-block;
+}

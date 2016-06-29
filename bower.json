@@ -1,8 +1,8 @@
 {
   "name": "sparkle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A particle system for browsers",
-  "main": "dist/particle-system.min.js",
+  "main": "dist/particle-system.js",
   "authors": [
     "Chris Vaccarello"
   ],

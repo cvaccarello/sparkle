@@ -6,54 +6,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Particle System Test Page</title>
 
+	<!-- load some styles specific to the example pages -->
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+	<link href='styles/example-pages.css' rel='stylesheet' type='text/css'>
 
+	<!-- styles specific to this example -->
 	<style>
-		body {
-		    background-color: #efefef;
-			font-family: 'Open Sans', sans-serif;
-			margin: 0;
-		}
-
-		.inline-block {
-			display: inline-block;
-			margin: 60px;
-			text-align: center;
-		}
-
-		.particle-emitter {
-			width: 200px; height: 200px;
-			background-color: #ffffff;
-			margin-bottom: 12px;
-			padding: 20px;
-			text-align: center;
-			font-size: 18px;
-			line-height: 1.2;
-			border: 1px solid #aaaaaa;
-			border-top: 3px solid;
-			box-shadow: 0 1px 15px rgba(0, 0, 0, 0.12);
-			cursor: pointer;
-			display: block;
-
-			-webkit-touch-callout: none; /* iOS Safari */
-		    -webkit-user-select: none;   /* Chrome/Safari/Opera */
-		    -khtml-user-select: none;    /* Konqueror */
-		    -moz-user-select: none;      /* Firefox */
-		    -ms-user-select: none;       /* Internet Explorer/Edge */
-		    user-select: none;
-		}
-
-		.particle-emitter.isActive {
-			border-top-color: red;
-		}
-
-		.particle-emitter > span {
-			position: relative;
-			top: 50%;
-			transform: translateY(-50%);
-			padding-bottom: 20px;
-			display: block;
-		}
 	</style>
 
 	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -72,9 +30,9 @@
 			MyParticleSystem.addEmitter(MyParticleEmitter);
 
 			// On click, toggle Particle Emitter on/off
-			$('a').on('click', function() {
+			$('button').on('click', function() {
 				// Add a class for styling purposes only
-				$(this).toggleClass('isActive');
+				$(this).toggleClass('is-active');
 
 				// Toggle emitter
 				MyParticleEmitter.toggle();
@@ -87,9 +45,11 @@
 </head>
 <body>
 
-	<div class="inline-block">
-		<a class="particle-emitter"><span>Click Here to Activate!</span></a>
-	</div>
+	<section>
+		<div class="inline-block">
+			<button class="particle-emitter red"><span>Click Here to Activate!</span></button>
+		</div>
+	</section>
 
 </body>
 </html>
