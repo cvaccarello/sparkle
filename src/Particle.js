@@ -1,12 +1,3 @@
-/*************************************************************************/
-/**  Author: Chris A Vaccarello											**/
-/**  Description:  A particle emiiter for use within particle system 	**/
-/**  Date: 6/16/16														**/
-/**  Version: 1.0														**/
-/**  Compatibility: FF, Chrome, Edge, IE10+								**/
-/*************************************************************************/
-
-
 /**
  * Particle class
  */

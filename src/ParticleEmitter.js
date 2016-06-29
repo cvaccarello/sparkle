@@ -1,12 +1,3 @@
-/*****************************************************/
-/**  Author: Chris A Vaccarello						**/
-/**  Description:  A particle system for browsers 	**/
-/**  Date: 6/16/16									**/
-/**  Version: 1.0									**/
-/**  Compatibility: FF, Chrome, Edge, IE10+			**/
-/*****************************************************/
-
-
 /**
  * ParticleEmitter class, controls Particles
  */
@@ -207,8 +198,8 @@ class ParticleEmitter {
 		var spawn_point = {x: offset.left + this._spawn_position.x, y: offset.top + this._spawn_position.y};
 
 		if (this._settings.spawn_point == 'random') {
-			spawn_point.x += Math.randomInt(0, this.width);
-			spawn_point.y += Math.randomInt(0, this.height);
+			spawn_point.x += Math.random() * this.width;
+			spawn_point.y += Math.random() * this.height;
 		}
 
 		return spawn_point;
@@ -262,7 +253,8 @@ class ParticleEmitter {
 		// create as many particles as the delay & max particle count will allow based on time since last update
 		if (this.particles.length < this._settings.max_particles) {
 			this._delay -= this._elapsed_time;
-			while (this._delay <= 0) {
+			// if emit_delay is 0, loop until all possible particles have been created 
+			while (this._delay <= 0 && this.particles.length < this._settings.max_particles) {
 				this._delay += emit_delay;
 
 				// create & append a particle at the given global spawn coordinates

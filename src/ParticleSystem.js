@@ -1,10 +1,10 @@
-/**********************************************************************/
-/**  Author: Chris A Vaccarello										**/
-/**  Description:  A particle for use within particle emitters		**/
-/**  Date: 6/16/16													**/
-/**  Version: 1.0													**/
-/**  Compatibility: FF, Chrome, Edge, IE10+							**/
-/*********************************************************************/
+/*****************************************************************************************************/
+/**  Author: Chris A Vaccarello																		**/
+/**  Description:  Particle System that controls Particle Emitters which in turn control Particles 	**/
+/**  Date: 6/16/16																					**/
+/**  Version: 1.0.1																					**/
+/**  Compatibility: FF, Chrome, Edge, IE10+															**/
+/*****************************************************************************************************/
 
 
 /**
