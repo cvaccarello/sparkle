@@ -86,6 +86,6 @@ var NewParticleEmitter = new ParticleEmitter({
 
 
 ## Working Demos
-[Basic Test Page](https://cvaccarello.github.io/sparkle/examples/basic.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
-[Configured Examples](https://cvaccarello.github.io/sparkle/examples/configurations.html) - Several simple particle effects, created with CSS and adjusting the configurations available.
+- [Basic Test Page](https://cvaccarello.github.io/sparkle/examples/basic.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
+- [Configured Examples](https://cvaccarello.github.io/sparkle/examples/configurations.html) - Several simple particle effects, created with CSS and adjusting the configurations available.
 Advanced Examples - Coming Soon.  Numerous advanced particle effects using images and extended classes.
