@@ -18,6 +18,9 @@ I also recommend *no more than 300* particles on the screen at a time.  It will 
 
 You can download this code, clone the repo, or download it via `bower install sparkle`.
 
+### Requirements
+- jQuery
+
 ### Configuration
 
 #### :sparkles: Particle System :sparkles:
@@ -88,4 +91,4 @@ var NewParticleEmitter = new ParticleEmitter({
 ## Working Demos
 - [Basic Test Page](https://cvaccarello.github.io/sparkle/examples/basic.html) - This is as simple as it gets! It creates a particle system, creates a particle emitter, and adds the emitter to the system.
 - [Configured Examples](https://cvaccarello.github.io/sparkle/examples/configurations.html) - Several simple particle effects, created with CSS and adjusting the configurations available.
-- Advanced Examples - Coming Soon.  Numerous advanced particle effects using images and extended classes.
+- [Advanced Effects](https://cvaccarello.github.io/sparkle/examples/advanced.html) - Numerous advanced particle effects using images and extended classes _(custom javascript)_.  *NOTE*: The examples here are using ES6 syntax for clarity purposes, and thus won't work in older browsers.  When making your own, I recommend using something like Babel to compile your javascript down into ES5 syntax and if you still need further backwards compatibility, I believe there are some shims out there.

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Particle System Test Page</title>
+
+	<!-- load some styles specific to the example pages -->
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600' rel='stylesheet' type='text/css'>
+	<link href='styles/example-pages.css' rel='stylesheet' type='text/css'>
+
+	<!-- styles specific to this example -->
+	<style>
+	.particle-star {
+		width: 15px; height: 15px;
+		background: transparent url('images/star.png') 0 0 no-repeat;
+		z-index: 2;
+	}
+
+
+	.particle-hearts {
+		width: 26px; height: 26px;
+		background: transparent url('images/hearts.png') 0 0 no-repeat;
+		z-index: 0;
+	}
+	.particle-hearts.particle-type-0 { background-position: 0 0; }
+	.particle-hearts.particle-type-1 { background-position: -28px 0; }
+	.particle-hearts.particle-type-2 { background-position: -56px 0; }
+	.particle-hearts.particle-type-3 { background-position: -84px 0; }
+	.particle-hearts.particle-type-4 { background-position: -112px 0; }
+
+	.particle-hearts.particle-type-5 { background-position: 0 -26px; }
+	.particle-hearts.particle-type-6 { background-position: -28px -26px; }
+	.particle-hearts.particle-type-7 { background-position: -56px -26px; }
+	.particle-hearts.particle-type-8 { background-position: -84px -26px; }
+	.particle-hearts.particle-type-9 { background-position: -112px -26px; }
+
+	.particle-hearts.particle-type-10 { background-position: 0 -52px; }
+	.particle-hearts.particle-type-11 { background-position: -28px -52px; }
+	.particle-hearts.particle-type-12 { background-position: -56px -52px; }
+	.particle-hearts.particle-type-13 { background-position: -84px -52px; }
+	.particle-hearts.particle-type-14 { background-position: -112px -52px; }
+
+	.particle-hearts.particle-type-15 { background-position: 0 -78px; }
+	.particle-hearts.particle-type-16 { background-position: -28px -78px; }
+	.particle-hearts.particle-type-17 { background-position: -56px -78px; }
+	.particle-hearts.particle-type-18 { background-position: -84px -78px; }
+	.particle-hearts.particle-type-19 { background-position: -112px -78px; }
+
+
+	.particle-coin {
+		width: 26px; height: 26px;
+		background: transparent url('images/coin.png') 0 0 no-repeat;
+		z-index: 2;
+	}
+	</style>
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<script src="helper-scripts/Vector2.js" type="text/javascript"></script>
+	<script src="../dist/particle-system.min.js" type="text/javascript"></script>
+
+	<script>
+		// I won't pretend to be an expert on physics, but I believe this is about right...
+		class GravityParticle extends Particle {
+			constructor(spawn_point, direction, cfg = {}, debug = false) {
+				super(spawn_point, direction, cfg, debug);
+
+				// friction just helps create a better illusion of gravity
+				//	 by slowly lowering the velocity x, y values (but b/c of gravity, really only the x value decreases over time)
+				this._friction = 0.95;
+
+				// real gravity would be more like 9.8, but for this sytem, since there is no "weight" to objects, I find a much lower gravity setting looks better
+				// 		also adding some variation to the "gravity" to sort of simulate weight and just space out particles better
+				this._gravity = new Vector2(0, 0.04 + (Math.random() * 0.01));
+				this._velocity = new Vector2(this._vx, this._vy);
+				this._terminal_velocity = this.speed;
+			}
+
+			move(elapsed_time) {
+				this._velocity = this._velocity.add(this._gravity).mul(this._friction);
+
+				// cap velocity to the terminal velocity value.  This is a bit of a slow calculation,
+				//		if you need a lot of particles you could probably skip this step as long as your
+				//		particles have a low time_to_live value, otherwise they could speed up out of control
+				var length = this._velocity.length();
+				if (length > this._terminal_velocity) {
+					this._velocity = this._velocity.normalizeCopy(length).mul(this._terminal_velocity);
+				}
+
+				// use the velocity * elapsed time to calculate how much to move the x, y coords of particle
+				var move = this._velocity.mul(elapsed_time);
+				this.coordinates.x += move.x;
+				this.coordinates.y += move.y;
+			}
+		}
+
+
+		// Moves particles outwards in a spiraling motion
+		class SpiralParticle extends Particle {
+			constructor(spawn_point, direction, cfg = {}, debug = false) {
+				super(spawn_point, direction, cfg, debug);
+
+				this._velocity = new Vector2(this._vx, this._vy);
+
+				// how much to turn per update of particle
+				this._spiral_amount = 0.1;
+			}
+
+			move(elapsed_time) {
+				// the less is spirals, the less the particle loops arouns, creating a nice gradual spiral effect
+				this._spiral_amount -= 0.001;
+
+				// normalized perpendicular vector so that we only slightly alter the velocity direction
+				var perpendicular_velocity = this._velocity.perpendicularVector().normalize().mul(this._spiral_amount);
+
+				// alter current velocity with a small nudge in perpendicular velocity
+				this._velocity = this._velocity.add(perpendicular_velocity);
+
+				// use the velocity * elapsed time to calculate how much to move the x, y coords of particle
+				var move = this._velocity.mul(elapsed_time);
+				this.coordinates.x += move.x;
+				this.coordinates.y += move.y;
+			}
+		}
+
+
+		// Move particles outwards in a wave-like motion (i.e., up and down, but in whatever direction is set)
+		class WaveParticle extends Particle {
+			constructor(spawn_point, direction, cfg = {}, debug = false) {
+				super(spawn_point, direction, cfg, debug);
+
+				// setup default extended settings
+				this._settings.ext = $.extend(true, {
+					random_offset: true,
+					amplitude: 50,
+					phase: 0,
+					frequency: 4
+				}, cfg.ext);
+
+				this._direction = direction;
+				this._velocity = new Vector2(this._vx, this._vy);
+
+				// this._counter = 0;
+				this._time_start = (new Date()).getTime();
+
+				// how much to oscillate (cycle) around the original direction provided
+				var radians = Math.PI / 180;
+				this._amplitude = this._settings.ext.amplitude * radians;
+
+				// offset in oscillation cycle
+				this._phase = (this._settings.ext.random_offset)?
+								(Math.random() * this._settings.ext.amplitude * 2) - this._settings.ext.amplitude:
+								this._settings.ext.phase;
+
+				// oscillations (cycles) that occur each second of time
+				//		NOTE:  I honestly don't understand the need for the "* 6" at the end.... I'm clearly not understanding something...
+				this._frequency = this._settings.ext.frequency / this._ttl * 6;
+			}
+
+			move(elapsed_time) {
+				var time = ((new Date()).getTime() - this._time_start);
+				var osc = this._amplitude * Math.cos(this._frequency * time + this._phase);
+				var vx = this.speed * (Math.cos(this._direction + osc));
+				var vy = this.speed * (-Math.sin(this._direction + osc));
+
+				this.coordinates.x += vx * elapsed_time;
+				this.coordinates.y += vy * elapsed_time;
+			}
+		}
+
+
+		// Custom particle to give additional variation to the WaveParticle class by extending it to use several different css class names
+		class HeartsParticle extends WaveParticle {
+			constructor(spawn_point, direction, cfg = {}, debug = false) {
+				super(spawn_point, direction, cfg, debug);
+
+				// setup default extended settings
+				this._settings.ext = $.extend(true, {
+					count: 5
+				}, cfg.ext);
+
+				// the first and last numbers will occur SLIGHTLY less often b/c of rounding
+				this.$element.addClass('particle-type-' + Math.round(Math.random() * this._settings.ext.count));
+			}
+		}
+
+
+		// Custom particle to give frame animation to a GravityParticle to make a coin spin animation
+		class CoinsParticle extends GravityParticle {
+			constructor(spawn_point, direction, cfg = {}, debug = false) {
+				super(spawn_point, direction, cfg, debug);
+
+				// setup default extended settings
+				this._settings.ext = $.extend(true, {
+					animation_speed: 300,
+					rows: 1,
+					columns: 1
+				}, cfg.ext);
+
+				// give some variation in the speed in which to animate
+				this._settings.ext.animation_speed += Math.random() * (this._settings.ext.animation_speed / 4);
+
+				this._total_elapsed_time = 0;
+
+				this._background_row = Math.round(Math.random() * (this._settings.ext.rows - 1));
+				this._background_column = Math.round(Math.random() * (this._settings.ext.columns - 1));
+
+				this.$element.css({
+					'background-position-x': -this.width * this._background_column + 'px',
+					'background-position-y': -this.height * this._background_row + 'px'
+				});
+			}
+
+			update(elapsed_time) {
+				super.update(elapsed_time);
+
+				// add the new elapsed time to the total for animation purposes
+				this._total_elapsed_time += elapsed_time;
+
+				// once total elapsed time is greater than animation rate, reset and move background frame
+				if (this._total_elapsed_time > this._settings.ext.animation_speed) {
+					// reset time so that it can build up to another change in background position
+					this._total_elapsed_time = 0;
+
+					// shift the background position over by 1 frame
+					this._background_column++;
+
+					// once the background position has moved past the max frames on the x-axis,
+					//		loop back around and move down 1 frame
+					if (this._background_column >= this._settings.ext.columns) {
+						this._background_row++;
+						this._background_column = 0;
+					}
+
+					// once the background position has moved past the max frames on the y-axis,
+					//		reset back up to the top of the image
+					if (this._background_row >= this._settings.ext.rows) {
+						this._background_row = 0;
+					}
+
+					this.$element.css({
+						'background-position-x': -this.width * this._background_column + 'px',
+						'background-position-y': -this.height * this._background_row + 'px'
+					});
+				}
+			}
+		}
+
+		var emitters = [];
+		$(document).ready(function() {
+			// Initialize Particle System
+			var MyParticleSystem = new ParticleSystem();
+
+			// Create an array to hold the emitters (only here for this example interface, not normally needed)
+			// var emitters = [];
+
+			// temporary holder for emitter
+			var $emitter;
+
+			// Create a Particle Emitter
+			$emitter = $('.particle-emitter[data-emitter-index="0"]');
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 80,
+				emit_delay: 140,
+				direction: { min: 180, max: 180 },
+				spawn_point: 'random',
+
+				particle: {
+					constructor: HeartsParticle,
+					append_to: $('body'),
+					template: '<div class="particle-hearts"></div>',
+					time_to_live: 15000,
+					speed: 50,
+
+					ext: {
+						count: 19,
+						amplitude: 50,
+						phase: 0,
+						frequency: 1
+					}
+				}
+			}));
+
+
+			// Create a "Wave Effect" Particle Emitter
+			$emitter = $('.particle-emitter[data-emitter-index="1"]');
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 100,
+				emit_delay: 30,
+				// spawn_point: 'random',
+
+				particle: {
+					constructor: WaveParticle,
+					append_to: $emitter,
+					template: '<div class="particle-star"></div>',
+					time_to_live: 2000,
+					speed: 100,
+
+					ext: {
+						amplitude: 50,
+						phase: 0,
+						frequency: 2
+					}
+				}
+			}));
+
+			// Create a "Spiral Effect" Particle Emitter
+			$emitter = $('.particle-emitter[data-emitter-index="2"]');
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 50,
+				emit_delay: 200,
+
+				particle: {
+					constructor: SpiralParticle,
+					append_to: $emitter,
+					template: '<div class="particle-star"></div>',
+					time_to_live: 2000,
+					speed: 5
+				}
+			}));
+
+			// Create a "Gravity Effect" Particle Emitter
+			$emitter = $('.particle-emitter[data-emitter-index="3"]');
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 200,
+				emit_delay: { min: 2, max: 300 },
+				direction: { min: -15, max: 15 },
+
+				particle: {
+					constructor: CoinsParticle,
+					append_to: $emitter,
+					template: '<div class="particle-coin"></div>',
+					time_to_live: 900,
+					speed: 700,
+
+					ext: {
+						animation_speed: 90,
+						rows: 2,
+						columns: 7
+					}
+				}
+			}));
+
+			// Add Particle Emitters to the Particle System
+			for (var i=0; i<emitters.length; i++) {
+				MyParticleSystem.addEmitter(emitters[i]);
+			}
+
+			// On click, toggle Particle Emitter on/off
+			$('button').not('[data-emitter-index="3"]').on('click', function() {
+				var $this = $(this);
+
+				// get index in emitter array
+				var index = $this.attr('data-emitter-index');
+
+				// Add a class for styling purposes only
+				$this.toggleClass('is-active');
+
+				// Toggle emitter
+				emitters[index].toggle();
+			});
+
+			// trigger last "coins effect" instead of toggling on/off; just trying to show off more features
+			$('button[data-emitter-index="3"]').on('mousedown', function() {
+				// Add a class for styling purposes only
+				$(this).addClass('is-active');
+				emitters[3].activate();
+			});
+			$('button[data-emitter-index="3"]').on('mouseup', function() {
+				// Add a class for styling purposes only
+				$(this).removeClass('is-active');
+				emitters[3].deactivate();
+			});
+
+			// REMEMBER:  When building a single-page app, you'll likely want some clean up and will need to remove the emitter, here's how
+			// MyParticleSystem.removeEmitter(MyParticleEmitter);
+		});
+	</script>
+</head>
+<body>
+
+	<section>
+		<div class="inline-block">
+			<button class="particle-emitter red" data-emitter-index="0"><span>Click Here to Activate!</span></button>
+		</div>
+
+		<div class="inline-block">
+			<button class="particle-emitter green" data-emitter-index="1"><span>Click Here to Activate!</span></button>
+		</div>
+
+		<div class="inline-block">
+			<button class="particle-emitter blue" data-emitter-index="2"><span>Click Here to Activate!</span></button>
+		</div>
+
+		<div class="inline-block">
+			<button class="particle-emitter orange" data-emitter-index="3"><span>Hold to Activate!</span></button>
+		</div>
+	</section>
+
+</body>
+</html>

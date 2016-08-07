@@ -1,3 +1,11 @@
+/*****************************************************************************************************/
+/**  Author: Chris A Vaccarello																		**/
+/**  Description:  Particle Emitters which creates & updates Particles 								**/
+/**  Date: 6/16/16																					**/
+/**  Compatibility: FF, Chrome, Edge, IE10+															**/
+/*****************************************************************************************************/
+
+
 /**
  * ParticleEmitter class, controls Particles
  */
@@ -160,7 +168,7 @@ class ParticleEmitter {
 		this._active = true;
 
 		// setup a delay callback to disable the emitter
-		this._triggerCallback = window.setTimeout(function() {
+		this._triggerCallback = window.setTimeout(() => {
 			this._active = false;
 			if (callback) { callback.call(); }
 		}, amount);
@@ -175,6 +183,20 @@ class ParticleEmitter {
 
 		// clear trigger function's callback, so that toggle and trigger don't conflict as much
 		if (this._triggerCallback) { window.clearTimeout(this._triggerCallback); }
+	}
+
+	/**
+	 * Turn emitter on
+	 */
+	activate() {
+		this._active = true;
+	}
+
+	/**
+	 * Turn emitter off
+	 */
+	deactivate() {
+		this._active = false;
 	}
 
 	/**
@@ -253,7 +275,7 @@ class ParticleEmitter {
 		// create as many particles as the delay & max particle count will allow based on time since last update
 		if (this.particles.length < this._settings.max_particles) {
 			this._delay -= this._elapsed_time;
-			// if emit_delay is 0, loop until all possible particles have been created 
+			// if emit_delay is 0, loop until all possible particles have been created
 			while (this._delay <= 0 && this.particles.length < this._settings.max_particles) {
 				this._delay += emit_delay;
 
