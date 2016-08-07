@@ -2,7 +2,6 @@
 /**  Author: Chris A Vaccarello																		**/
 /**  Description:  Particle System that controls Particle Emitters which in turn control Particles 	**/
 /**  Date: 6/16/16																					**/
-/**  Version: 1.0.1																					**/
 /**  Compatibility: FF, Chrome, Edge, IE10+															**/
 /*****************************************************************************************************/
 
@@ -15,7 +14,7 @@ class ParticleSystem {
 	/**
 	 * Creates a ParticleSystem object
 	 * @param {Object} cfg - default particle system settings
- 	 * @property {Number} cfg.timeout - time between update intervals for the particle system
+ 	 * @deprecated {Number} cfg.timeout - time between update intervals for the particle system
 	 * @constructor
  	 */
 	constructor(cfg = {}, debug = false) {
@@ -41,7 +40,12 @@ class ParticleSystem {
 		*********************************************************************************/
 
 		// start a loop for the updating and rendering of emitters and particles
-		window.setInterval(() => { this._update(); }, this._settings.timeout);
+		if (requestAnimationFrame) {
+			var update = () => { window.setTimeout(() => { this._update(); requestAnimationFrame(update); }, this._settings.timeout); }
+			update();
+		} else {
+			window.setInterval(() => { this._update(); }, this._settings.timeout);
+		}
 	}
 
 

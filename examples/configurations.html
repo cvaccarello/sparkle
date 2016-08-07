@@ -32,7 +32,7 @@
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000082e5', endColorstr='#004799',GradientType=0 ); /* IE6-9 */
 
 		transform: rotate(-10deg);				/* for the browsers that support this... */
-		opacity: 0.7;
+		opacity: 0.6;
 		border-radius: 10px;
 		z-index: 2;
 	}
@@ -41,6 +41,13 @@
 		width: 1px; height: 1px;
 		background-color: #ff00ff;
 		border-radius: 10px;
+		z-index: 2;
+	}
+
+	.particle-dots {
+		width: 30px; height: 30px;
+		background-color: #ffaa00;
+		border-radius: 30px;
 		z-index: 2;
 	}
 	</style>
@@ -55,13 +62,13 @@
 			// Create an array to hold the emitters (only here for this example interface, not normally needed)
 			var emitters = [];
 
-			// temporary optimization
+			// temporary holder for emitter
 			var $emitter;
 
 			// Create a "Bubble Effect" Particle Emitter
 			$emitter = $('.particle-emitter[data-emitter-index="0"]');
 			emitters.push(new ParticleEmitter({
-				element: $emitter.find('span'),		// use text span as container for "spawn_point: 'random'"
+				element: $emitter.find('span'),		// use text span as container for initial particle location calculations (spawn_point: 'random')
 				max_particles: 25,
 				emit_delay: 300,
 				direction: { min: -25, max: 25 },
@@ -69,7 +76,7 @@
 
 				particle: {
 					append_to: $emitter,			// add particles to emitter element itself, so that you don't run into situation where you click on a particle and nothing happens
-					template: `<div class="particle-bubble"></div>`,
+					template: '<div class="particle-bubble"></div>',
 					time_to_live: 4500,
 					speed: 30,
 					size: 4
@@ -86,7 +93,7 @@
 
 				particle: {
 					append_to: $emitter,
-					template: `<div style="width: 5px; height: 5px; background-color: #00aa00; z-index: 2;"></div>`,
+					template: '<div style="width: 5px; height: 5px; background-color: #00aa00; z-index: 2;"></div>',
 					speed: 70,
 					size: -0.004		// very slowly, make particles smaller
 				}
@@ -104,7 +111,7 @@
 
 				particle: {
 					append_to: $emitter,
-					template: `<div class="particle-rain"></div>`,
+					template: '<div class="particle-rain"></div>',
 					time_to_live: 2000,
 					speed: 200
 				}
@@ -119,11 +126,28 @@
 				spawn_point: 'center',
 
 				particle: {
-					append_to: $('body'),
-					template: `<div class="particle-purple-stuff"></div>`,
+					append_to: $emitter,
+					template: '<div class="particle-purple-stuff"></div>',
 					time_to_live: 2250,
 					speed: 50,
 					size: 2.2
+				}
+			}));
+
+			// Create "Dots Effect" Particle Emitter
+			$emitter = $('.particle-emitter[data-emitter-index="4"]')
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 20,
+				emit_delay: { min: 100, max: 500 },
+				spawn_point: 'random',
+
+				particle: {
+					append_to: $emitter,
+					template: '<div class="particle-dots"></div>',
+					time_to_live: 2000,
+					speed: 0,
+					size: -0.01
 				}
 			}));
 
@@ -171,6 +195,10 @@
 
 		<div class="inline-block">
 			<button class="particle-emitter purple" data-emitter-index="3"><span>Click Here to Activate!</span></button>
+		</div>
+
+		<div class="inline-block">
+			<button class="particle-emitter orange" data-emitter-index="4"><span>Click Here to Activate!</span></button>
 		</div>
 	</section>
 

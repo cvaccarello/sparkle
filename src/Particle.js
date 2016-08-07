@@ -1,3 +1,11 @@
+/*****************************************************************************************************/
+/**  Author: Chris A Vaccarello																		**/
+/**  Description:  A Particle class for controlling how a single particle behaves					**/
+/**  Date: 6/16/16																					**/
+/**  Compatibility: FF, Chrome, Edge, IE10+															**/
+/*****************************************************************************************************/
+
+
 /**
  * Particle class
  */
@@ -40,10 +48,9 @@ class Particle {
 		this.size = this._settings.size;
 		this.speed = this._settings.speed;
 
-		// convert the global spawn_point coordinates into their appropriate local coordinates
-		var local_coords = this._settings.append_to.offsetParent().offset();
+		// convert the global spawn_point coordinates into their appropriate local coordinates (based off the closest positioned parent)
+		var local_coords = this.$element.offsetParent().offset();
 		this.coordinates = {x: spawn_point.x - local_coords.left, y: spawn_point.y - local_coords.top};
-
 
 
 		/*********************************************************************************
@@ -53,9 +60,9 @@ class Particle {
 		// for debugging purposes (used for console logging)
 		this._debug = debug;
 
-		// OPTIMIZATION: movement amount based on speed and direction
-		this._moveX = this.speed * (Math.cos(direction));
-		this._moveY = this.speed * (-Math.sin(direction));
+		// OPTIMIZATION: velocity/movement amount based on speed and direction
+		this._vx = this.speed * (Math.cos(direction));
+		this._vy = this.speed * (-Math.sin(direction));
 
 		// how long the particle will exist before it's removal
 		this._ttl = this._settings.time_to_live;
@@ -109,8 +116,8 @@ class Particle {
 	 * @param elapsed_time
 	 */
 	move(elapsed_time) {
-		this.coordinates.x += this._moveX * elapsed_time;
-		this.coordinates.y += this._moveY * elapsed_time;
+		this.coordinates.x += this._vx * elapsed_time;
+		this.coordinates.y += this._vy * elapsed_time;
 	};
 
 	/**

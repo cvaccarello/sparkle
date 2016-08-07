@@ -8,13 +8,13 @@ body {
 	margin: 0;
 }
 
-/* Cool firefox, just make buttons different b/c you feel like it... nice.  As you can tell, firefox needs this for things to look consistent. */
+/* for some reason buttons need this font style for things to look consistent, not entirely certain why browsers do that, but this is probably why a reset stylesheet would be nice */
 button {
 	font-family: 'Open Sans', sans-serif;
 }
 
 section {
-	margin: 20px 0;
+	margin: 20px 40px;
 }
 
 p {
@@ -25,9 +25,11 @@ p {
 	display: inline-block;
 	margin: 40px;
 	text-align: center;
+	vertical-align: top;
 }
 
 .particle-emitter {
+	position: relative;
 	width: 240px; height: 240px;
 	background-color: #ffffff;
 	padding: 20px;
@@ -41,6 +43,7 @@ p {
 	cursor: pointer;
 	display: block;
 	outline: none;
+	z-index: 1;
 
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -64,6 +67,10 @@ p {
 
 .particle-emitter.purple.is-active {
 	border-top-color: #ff00ff;
+}
+
+.particle-emitter.orange.is-active {
+	border-top-color: #ffaa00;
 }
 
 .particle-emitter > span {
