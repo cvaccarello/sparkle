@@ -142,8 +142,9 @@ class Particle {
 	 _render() {
 		// TODO:  look into rendering to a canvas
  		this.$element.css({
- 			'top': (this.coordinates.y - (this.width / 2)) + 'px',
- 			'left': (this.coordinates.x - (this.height / 2)) + 'px',
+ 			'top': 0,
+ 			'left': 0,
+ 			'transform': 'translate(' + (this.coordinates.x - (this.height / 2)) + 'px, ' + (this.coordinates.y - (this.width / 2)) + 'px)',
  			'width': this.width + 'px',
  			'height': this.height + 'px'
  		});
