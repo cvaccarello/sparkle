@@ -78,8 +78,8 @@
 					append_to: $emitter,			// add particles to emitter element itself, so that you don't run into situation where you click on a particle and nothing happens
 					template: '<div class="particle-bubble"></div>',
 					time_to_live: 4500,
-					speed: 30,
-					size: 4
+					speed_amt: 30,
+					size_amt: 4
 				}
 			}));
 
@@ -94,8 +94,8 @@
 				particle: {
 					append_to: $emitter,
 					template: '<div style="width: 5px; height: 5px; background-color: #00aa00; z-index: 2;"></div>',
-					speed: 70,
-					size: -0.004		// very slowly, make particles smaller
+					speed_amt: 70,
+					size_amt: -0.004		// very slowly, make particles smaller
 				}
 			}));
 
@@ -113,7 +113,7 @@
 					append_to: $emitter,
 					template: '<div class="particle-rain"></div>',
 					time_to_live: 2000,
-					speed: 200
+					speed_amt: 200
 				}
 			}));
 
@@ -129,8 +129,8 @@
 					append_to: $emitter,
 					template: '<div class="particle-purple-stuff"></div>',
 					time_to_live: 2250,
-					speed: 50,
-					size: 2.2
+					speed_amt: 50,
+					size_amt: 2.2
 				}
 			}));
 
@@ -146,8 +146,8 @@
 					append_to: $emitter,
 					template: '<div class="particle-dots"></div>',
 					time_to_live: 2000,
-					speed: 0,
-					size: -0.01
+					speed_amt: 0,
+					size_amt: -0.01
 				}
 			}));
 

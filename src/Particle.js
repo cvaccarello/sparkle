@@ -23,34 +23,40 @@ class Particle {
  	 * @property {Number} cfg.time_to_live - lifespan of particles (how long they'll exist before being removed)
  	 * @property {Number} cfg.speed - how fast particles will move based on elapsed time in pps (pixels per second)
  	 * @property {Number} cfg.size - number to incrementally increase particle element by, based on elapsed time in pps (pixels per second)
+	 * @param {Boolean} [debug]
+	 * @param {DOM} [ctx] - context of canvas element
 	 * @constructor
 	 */
-	constructor(spawn_point, direction, cfg = {}, debug = false) {
+	constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
 		// setup default settings, given configuration
 		this._settings = $.extend(true, {
 			append_to: $('body'),
 			template: `<div style="width: 5px; height: 5px; background-color: red; z-index: 2;"></div>`,
 			time_to_live: 2000,
-			speed: 10,
-			size: 0
+			speed_amt: 10,
+			size_amt: 0,
+			size: 10
 		}, cfg);
 
-		// create a DOM object given a template, and hide so that it has dimension, but can't be seen until positioned
-		this.$element = $(this._settings.template).css('visibility', 'hidden');
+		if (!ctx) {
+			// create a DOM object given a template, and hide so that it has dimension, but can't be seen until positioned
+			this.$element = $(this._settings.template).css('visibility', 'hidden');
+			
+			// append particle element to an element on the page
+			this.$element.appendTo(this._settings.append_to);
 
-		// append particle element to an element on the page
-		this.$element.appendTo(this._settings.append_to);
-
-		// get width and height of element for positioning purposes
-		this.width = this.$element.width();
-		this.height = this.$element.height();
-
-		this.size = this._settings.size;
-		this.speed = this._settings.speed;
+			// get width and height of element for positioning purposes
+			this.width = this.$element.width();
+			this.height = this.$element.height();
+		}
 
 		// convert the global spawn_point coordinates into their appropriate local coordinates (based off the closest positioned parent)
-		var local_coords = this.$element.offsetParent().offset();
+		var local_coords = (this.$element)? this.$element.offsetParent().offset(): this._settings.append_to.offset();
+
 		this.coordinates = {x: spawn_point.x - local_coords.left, y: spawn_point.y - local_coords.top};
+
+		this.size_amt = this._settings.size_amt;
+		this.speed_amt = this._settings.speed_amt;
 
 
 		/*********************************************************************************
@@ -61,23 +67,30 @@ class Particle {
 		this._debug = debug;
 
 		// OPTIMIZATION: velocity/movement amount based on speed and direction
-		this._vx = this.speed * (Math.cos(direction));
-		this._vy = this.speed * (-Math.sin(direction));
+		this._vx = this.speed_amt * (Math.cos(direction));
+		this._vy = this.speed_amt * (-Math.sin(direction));
 
 		// how long the particle will exist before it's removal
 		this._ttl = this._settings.time_to_live;
 
+		// store reference to context of canvas elements
+		this.ctx = ctx;
+
+		// default size of canvas particles
+		this.size = this._settings.size;
 
 
 		/*********************************************************************************
 		**  INITIALIZE PARTICLE															**
 		*********************************************************************************/
 
-		// set visibility so that the particle can now be seen (it was hidden until position calculations were complete)
-		this.$element.css({
-			'position': 'absolute',
-			'visibility': 'visible'
-		});
+		if (!ctx) {
+			// set visibility so that the particle can now be seen (it was hidden until position calculations were complete)
+			this.$element.css({
+				'position': 'absolute',
+				'visibility': 'visible'
+			});
+		}
 
 		// render the particle
 		this._render();
@@ -95,8 +108,8 @@ class Particle {
 		this.move(elapsed_time);
 
 		// adjust width & height based on size increase/decrease setting
-		this.width += this.size * elapsed_time;
-		this.height += this.size * elapsed_time;
+		this.width += this.size_amt * elapsed_time;
+		this.height += this.size_amt * elapsed_time;
 
 		// render element (update in dom)
 		this._render();
@@ -124,7 +137,9 @@ class Particle {
 	 * Remove this particle element from the DOM
 	 */
 	remove() {
-		this.$element.remove();
+		if (this.$element) {
+			this.$element.remove();
+		}
 	};
 
 	/**
@@ -139,13 +154,23 @@ class Particle {
 	/**
 	 * Render the particle in the dom
 	 */
-	 _render() {
-		// TODO:  look into rendering to a canvas
- 		this.$element.css({
- 			'top': (this.coordinates.y - (this.width / 2)) + 'px',
- 			'left': (this.coordinates.x - (this.height / 2)) + 'px',
- 			'width': this.width + 'px',
- 			'height': this.height + 'px'
- 		});
- 	};
+	_render() {
+		if (this.ctx) {
+			this.ctx.fillStyle = this._settings.append_to.css('color');
+			this.ctx.beginPath();
+			this.ctx.arc(this.coordinates.x, this.coordinates.y, this.size, 0, 2 * Math.PI);
+			this.ctx.closePath();
+			this.ctx.fill()
+		} else if (this.$element) {
+			// TODO:  look into rendering to a canvas
+			this.$element.css({
+				'top': 0,
+				'left': 0,
+				'transform': 'translate(' + (this.coordinates.x - (this.height / 2)) + 'px, ' + (this.coordinates.y - (this.width / 2)) + 'px)',
+				'width': this.width + 'px',
+				'height': this.height + 'px'
+			});
+			
+		}
+	};
 };

@@ -63,8 +63,8 @@
 	<script>
 		// I won't pretend to be an expert on physics, but I believe this is about right...
 		class GravityParticle extends Particle {
-			constructor(spawn_point, direction, cfg = {}, debug = false) {
-				super(spawn_point, direction, cfg, debug);
+			constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
+				super(spawn_point, direction, cfg, debug, ctx);
 
 				// friction just helps create a better illusion of gravity
 				//	 by slowly lowering the velocity x, y values (but b/c of gravity, really only the x value decreases over time)
@@ -74,7 +74,7 @@
 				// 		also adding some variation to the "gravity" to sort of simulate weight and just space out particles better
 				this._gravity = new Vector2(0, 0.04 + (Math.random() * 0.01));
 				this._velocity = new Vector2(this._vx, this._vy);
-				this._terminal_velocity = this.speed;
+				this._terminal_velocity = this.speed_amt;
 			}
 
 			move(elapsed_time) {
@@ -98,8 +98,8 @@
 
 		// Moves particles outwards in a spiraling motion
 		class SpiralParticle extends Particle {
-			constructor(spawn_point, direction, cfg = {}, debug = false) {
-				super(spawn_point, direction, cfg, debug);
+			constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
+				super(spawn_point, direction, cfg, debug, ctx);
 
 				this._velocity = new Vector2(this._vx, this._vy);
 
@@ -127,8 +127,8 @@
 
 		// Move particles outwards in a wave-like motion (i.e., up and down, but in whatever direction is set)
 		class WaveParticle extends Particle {
-			constructor(spawn_point, direction, cfg = {}, debug = false) {
-				super(spawn_point, direction, cfg, debug);
+			constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
+				super(spawn_point, direction, cfg, debug, ctx);
 
 				// setup default extended settings
 				this._settings.ext = $.extend(true, {
@@ -161,8 +161,8 @@
 			move(elapsed_time) {
 				var time = ((new Date()).getTime() - this._time_start);
 				var osc = this._amplitude * Math.cos(this._frequency * time + this._phase);
-				var vx = this.speed * (Math.cos(this._direction + osc));
-				var vy = this.speed * (-Math.sin(this._direction + osc));
+				var vx = this.speed_amt * (Math.cos(this._direction + osc));
+				var vy = this.speed_amt * (-Math.sin(this._direction + osc));
 
 				this.coordinates.x += vx * elapsed_time;
 				this.coordinates.y += vy * elapsed_time;
@@ -172,8 +172,8 @@
 
 		// Custom particle to give additional variation to the WaveParticle class by extending it to use several different css class names
 		class HeartsParticle extends WaveParticle {
-			constructor(spawn_point, direction, cfg = {}, debug = false) {
-				super(spawn_point, direction, cfg, debug);
+			constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
+				super(spawn_point, direction, cfg, debug, ctx);
 
 				// setup default extended settings
 				this._settings.ext = $.extend(true, {
@@ -188,8 +188,8 @@
 
 		// Custom particle to give frame animation to a GravityParticle to make a coin spin animation
 		class CoinsParticle extends GravityParticle {
-			constructor(spawn_point, direction, cfg = {}, debug = false) {
-				super(spawn_point, direction, cfg, debug);
+			constructor(spawn_point, direction, cfg = {}, debug = false, ctx = null) {
+				super(spawn_point, direction, cfg, debug, ctx);
 
 				// setup default extended settings
 				this._settings.ext = $.extend(true, {
@@ -272,7 +272,7 @@
 					append_to: $('body'),
 					template: '<div class="particle-hearts"></div>',
 					time_to_live: 15000,
-					speed: 50,
+					speed_amt: 50,
 
 					ext: {
 						count: 19,
@@ -297,7 +297,7 @@
 					append_to: $emitter,
 					template: '<div class="particle-star"></div>',
 					time_to_live: 2000,
-					speed: 100,
+					speed_amt: 100,
 
 					ext: {
 						amplitude: 50,
@@ -319,7 +319,7 @@
 					append_to: $emitter,
 					template: '<div class="particle-star"></div>',
 					time_to_live: 2000,
-					speed: 5
+					speed_amt: 5
 				}
 			}));
 
@@ -336,13 +336,31 @@
 					append_to: $emitter,
 					template: '<div class="particle-coin"></div>',
 					time_to_live: 900,
-					speed: 700,
+					speed_amt: 700,
 
 					ext: {
 						animation_speed: 90,
 						rows: 2,
 						columns: 7
 					}
+				}
+			}));
+
+			// Canvas Emitter!
+			$emitter = $('.particle-emitter[data-emitter-index="4"]');
+			emitters.push(new ParticleEmitter({
+				element: $emitter,
+				max_particles: 100,
+				emit_delay: { min: 110, max: 200 },
+				direction: 'in',
+				spawn_point: 'outside',
+
+				particle: {
+					// append_to: $emitter,
+					// template: '<div class="particle-gooey-circle"><div></div></div>',
+					time_to_live: 15000,
+					speed_amt: 30,
+					size: 20
 				}
 			}));
 
@@ -400,7 +418,24 @@
 		<div class="inline-block">
 			<button class="particle-emitter orange" data-emitter-index="3"><span>Hold to Activate!</span></button>
 		</div>
+
+		<!-- faking some styles on this one... -->
+		<div class="inline-block" style="position: relative; overflow: hidden; width: 240px; height: 240px; background: #ffffff; box-shadow: 0 1px 15px rgba(0, 0, 0, 0.12); z-index: 1;">
+			<canvas class="particle-emitter" data-emitter-index="4" width="240" height="240" style="color: #ff00ff; background: transparent; padding: 0; filter: url(#goo); top: -40px; left: -40px; width: calc(100% + 80px); height: calc(100% + 80px);"></canvas>
+			<button class="particle-emitter purple" data-emitter-index="4" style="position: absolute; top: 0; left: 0; background: transparent; box-shadow: none;"><span>Click Here to Activate Canvas!</span></button>
+		</div>
 	</section>
+
+	<!-- special filter for gooey circles -->
+	<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+		<defs>
+			<filter id="goo">
+				<feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+				<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -40" result="goo" />
+				<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+			</filter>
+		</defs>
+	</svg>
 
 </body>
 </html>
