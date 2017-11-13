@@ -43,10 +43,10 @@ Key | Description
 | emit_delay | time between particle emissions (use an object with min & max for a random amount, or a number for consistent particles emissions)
 | emit_delay.min | used for random emit setting (minimum amount of delay)
 | emit_delay.max | used for random emit setting (maximum amount of delay)
-| direction | random direction range to move particles (0 moves up, 90 right, 180 down, 270 left)
+| direction | random direction range to move particles (0 moves up, 90 right, 180 down, 270 left).  Can also be a special case string 'in' value, for when particles spawn 'outside' of the visible container.
 | direction.min | min in degrees
 | direction.max | max in degrees
-| spawn_point | particle spawn location within emitter element ('center', 'random', 'none' - top-left corner)
+| spawn_point | particle spawn location within emitter element ('center', 'random', 'outside', 'none' - top-left corner)
 
 Example:
 ```
@@ -69,8 +69,9 @@ Key | Description
 | particle.append_to | jquery element to append the particles to
 | particle.template | an html string template to create particles with (this is what you see on the screen and in the DOM)
 | particle.time_to_live | lifespan of particles (how long they'll exist before being removed)
-| particle.speed | how fast particles will move based on elapsed time in pps (pixels per second)
-| particle.size | number to incrementally increase particle element by, based on elapsed time in pps (pixels per second)
+| particle.speed_amt | how fast particles will move based on elapsed time in pps (pixels per second)
+| particle.size_amt | number to incrementally increase particle element by, based on elapsed time in pps (pixels per second)
+| particle.size | Canvas particle size only for now
 
 Example:
 ```
