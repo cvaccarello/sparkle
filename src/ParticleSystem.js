@@ -40,8 +40,8 @@ class ParticleSystem {
 		*********************************************************************************/
 
 		// start a loop for the updating and rendering of emitters and particles
-		if (requestAnimationFrame) {
-			var update = () => { window.setTimeout(() => { this._update(); requestAnimationFrame(update); }, this._settings.timeout); }
+		if (window.requestAnimationFrame) {
+			var update = () => { window.setTimeout(() => { this._update(); window.requestAnimationFrame(update); }, this._settings.timeout); }
 			update();
 		} else {
 			window.setInterval(() => { this._update(); }, this._settings.timeout);
