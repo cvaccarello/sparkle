@@ -214,13 +214,15 @@ class ParticleEmitter {
 	/**
 	 * Trigger this emitter for x amount of time
 	 * @param {Number} amount - how long to emit particles for
-	 * @param {Function|Callback} [callback] - optional function to call when completed
+	 * @param {Function} [callback] - optional function to call when completed
 	 */
 	trigger(amount, callback) {
 		// set this emitter to active state
 		this._active = true;
 
-		// setup a delay callback to disable the emitter
+		window.clearTimeout(this._triggerCallback);
+
+		// set up a delay callback to disable the emitter
 		this._triggerCallback = window.setTimeout(() => {
 			this._active = false;
 			if (callback) { callback.call(); }
